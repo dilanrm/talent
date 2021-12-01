@@ -1,0 +1,62 @@
+[
+  {
+    "fullname": "ZEA Cornelia",
+    "age": 23,
+    "birth": "29/08/1998",
+    "personality": "energic",
+    "skills": "singing,gaming,acting",
+    "price": 175000,
+    "gender": "female",
+    "nationality": "Indonesia",
+    "userId": 1,
+    "height":149
+  },
+  {
+    "fullname": "Taka Radjiman",
+    "age": 27,
+    "birth": "14/03/1994",
+    "personality": "soft",
+    "skills": "singing,gaming,acting",
+    "price": 190000,
+    "gender": "male",
+    "nationality": "Indonesia",
+    "userId": 1,
+    "height":175
+  },
+  {
+    "fullname": "Tsukino Mito",
+    "age": 19,
+    "birth": "24/09/2002",
+    "personality": "quirky",
+    "skills": "singing,drawing,gaming,acting",
+    "price": 900000,
+    "gender": "female",
+    "nationality": "Japan",
+    "userId": 1,
+    "height":151
+  },
+  {
+    "fullname": "Watson Amelia",
+    "age": 21,
+    "birth": "06/01/2000",
+    "personality": "eccentric",
+    "skills": "singing,drawing,acting",
+    "price": 1900000,
+    "gender": "female",
+    "nationality": "America",
+    "userId": 1,
+    "height":150
+  },
+  {
+    "fullname": "Min Suha",
+    "age": 20,
+    "birth": "03/04/2001",
+    "personality": "cool",
+    "skills": "singing,gaming,acting",
+    "price": 190000,
+    "gender": "male",
+    "nationality": "Korea",
+    "userId": 1,
+    "height":180
+  }
+]
