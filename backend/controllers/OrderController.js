@@ -9,13 +9,24 @@ class OrderController {
           userId: id,
         },
         include: [user],
-        order: [["id", "ASC"]],
+        order: [["createdAt", "DESC"]],
       });
       res.status(200).json(result);
     } catch (e) {
       res.status(400).json({
         message: e.error,
       });
+    }
+  }
+
+  static async getAll(req, res) {
+    try {
+      const result = await order.findAll({
+        order: [["createdAt", "DESC"]],
+      });
+      res.status(200).json(result);
+    } catch (e) {
+      res.status(400).json(e);
     }
   }
 
@@ -28,13 +39,12 @@ class OrderController {
       total_due,
       total_days,
       description,
-      payt_trx_numb,
+      payt_trx_num,
       city,
       address,
-      status,
     } = req.body;
+    const { id } = req.userData;
     try {
-      const { id } = req.userData;
       const result = await order.create({
         enddate,
         startdate,
@@ -43,16 +53,16 @@ class OrderController {
         total_due,
         total_days,
         description,
-        payt_trx_numb,
+        payt_trx_num,
         city,
         address,
-        status,
+        status: "pending",
         userId: id,
       });
       res.status(200).json(result);
     } catch (err) {
       res.status(400).json({
-        message: err.error,
+        message: err,
       });
     }
   }
@@ -61,6 +71,23 @@ class OrderController {
     try {
       const id = req.params.id;
       const result = await order.findByPk(id);
+      res.status(200).json(result);
+    } catch (err) {
+      res.status(400).json({
+        message: err.error,
+      });
+    }
+  }
+  static async confirm(req, res) {
+    try {
+      const id = +req.params.id;
+      const status = "success";
+      const result = await order.update(
+        {
+          status,
+        },
+        { where: { id } }
+      );
       res.status(200).json(result);
     } catch (err) {
       res.status(400).json({
@@ -80,7 +107,7 @@ class OrderController {
         total_due,
         total_days,
         description,
-        payt_trx_numb,
+        payt_trx_num,
         city,
         address,
         status,
@@ -95,7 +122,7 @@ class OrderController {
           total_due,
           total_days,
           description,
-          payt_trx_numb,
+          payt_trx_num,
           city,
           address,
           status,

@@ -88,7 +88,7 @@ class TalentCotroller {
   }
 
   static async talentById(req, res) {
-    const id = req.params.id;
+    const id = +req.params.id;
     try {
       const data = await talent.findByPk(id);
       res.status(200).json(data);

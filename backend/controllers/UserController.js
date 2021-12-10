@@ -1,4 +1,4 @@
-const { user } = require("../models");
+const { user, cart } = require("../models");
 const { decryptPwd } = require("../helpers/bcrypt");
 const { tokenGenerator, tokenVerify } = require("../helpers/jwt");
 
@@ -28,6 +28,12 @@ class UserController {
         avatar,
         type
       });
+      if(result){
+        // console.log(result);
+        const { id } = result.dataValues;
+        const resu = await cart.create({ status: "booking"});
+        console.log(resu);
+      }
       res.status(200).json(result);
     } catch (e) {
       res.status(500).json(e);
@@ -70,10 +76,31 @@ class UserController {
   }
 
   static async getOne(req, res) {
-    const id = req.params.id;
+    const id = req.userData.id;
     try {
       const data = await user.findByPk(id);
       res.status(200).json(data);
+    } catch (e) {
+      res.status(400).json(e);
+    }
+  }
+
+  static async getEdit(req, res) {
+    const id = +req.params.id;
+    try {
+      const data = await user.findByPk(id);
+      res.status(200).json(data);
+    } catch (e) {
+      res.status(400).json(e);
+    }
+  }
+  
+  static async checkMail(req, res) {
+    const email = req.params.email;
+    try {
+      const data = await user.findAll({where:{email}});
+      if(data.length !== 0) res.status(200).json(true);
+      else res.status(200).json(false);
     } catch (e) {
       res.status(400).json(e);
     }

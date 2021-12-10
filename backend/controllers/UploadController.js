@@ -5,8 +5,7 @@ const { user, talent_image } = require("../models");
 
 class UploadController {
   static userImg(req, res) {
-    //   const { id } = req.userData;
-    const id = +req.params.id;
+    // const id = +req.params.id;
 
     let upload = multer({
       storage: fileUpload.files.storage("user"),
@@ -19,14 +18,15 @@ class UploadController {
       } else if (err) {
         res.json({ message: err });
       } else {
+        const { id } = req.userData;
         try {
           const result = await user.update(
             {
-              avatar: `http://localhost:3000/static/files/${req.file.filename}`,
+              avatar: `http://localhost:3000/static/publics/${req.file.filename}`,
             },
             { where: { id } }
           );
-
+          console.log(req.file);
           res.status(200).json(result);
         } catch (err) {
           res.status(500).json(err);
@@ -36,7 +36,7 @@ class UploadController {
         //   .json({ message: "success", destination: req.file.filename });
       }
     });
-    console.log(req.userData);
+    console.log(req.file);
   }
 
   static prodImg(req, res) {

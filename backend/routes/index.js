@@ -1,10 +1,14 @@
 const router = require("express").Router();
+const CheckoutContoller = require("../controllers/CheckoutController");
+const { authentication } = require("../middlewares/auth");
 
 router.get("/", (req, res) => {
   res.status(200).json({
     message: "Home Page",
   });
 });
+
+router.post("/checkout", authentication, CheckoutContoller.index);
 
 const userRoutes = require("./user");
 router.use("/users", userRoutes);

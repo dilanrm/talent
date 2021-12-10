@@ -13,6 +13,7 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
       line_item.belongsTo(models.talent);
       line_item.belongsTo(models.cart);
+      line_item.belongsTo(models.order);
     }
   };
   line_item.init({
@@ -47,8 +48,16 @@ module.exports = (sequelize, DataTypes) => {
           message: "cart_id must not be empty",
         },
       },
+    },
+    orderId: {
+      type: DataTypes.INTEGER,
     }
   }, {
+    hooks: {
+    beforeCreate: function (line_item, options) {
+      line_item.orderId = 0;
+    },
+  },
     sequelize,
     modelName: 'line_item',
   });

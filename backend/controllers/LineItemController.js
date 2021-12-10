@@ -1,16 +1,49 @@
-const { line_item, talent, cart } = require("../models");
+const { line_item, talent, cart, order } = require("../models");
 
 class LineItemController {
   static async getLineItem(req, res) {
+    let { id } = req.userData;
+
+    try {
+      const cartId = await cart.findAll({
+        where: { userId: id },
+      });
+      if (cartId) {
+        try {
+          const result = await line_item.findAll({
+            where: {
+              cartId: cartId[0].dataValues.id,
+              status: "booking",
+            },
+            include: [talent, cart, order],
+            order: [["id", "ASC"]],
+          });
+          res.status(200).json(result);
+        } catch (e) {
+          res.status(400).json({
+            message: err,
+          });
+        }
+      }
+    } catch (err) {
+      console.log(err);
+      res.status(400).json({
+        message: err,
+      });
+    }
+  }
+
+  static async getItemByOrder(req,res){
+    const id = +req.params.id;
     try {
       const result = await line_item.findAll({
-        include: [talent, cart],
+        include: [talent],
         order: [["id", "ASC"]],
       });
       res.status(200).json(result);
-    } catch (err) {
+    } catch (e) {
       res.status(400).json({
-        message: err,
+        message: e,
       });
     }
   }
@@ -50,6 +83,22 @@ class LineItemController {
       res.status(400).json({
         message: err.error,
       });
+    }
+  }
+
+  static async edit(req, res) {
+    const id = +req.params.id;
+    const { ids } = req.body;
+    console.log(req.body)
+    try {
+      const result = await line_item.update(
+        { orderId: id, status: "success" },
+        { where: { id: ids } }
+      );
+      res.status(200).json(result);
+    } catch (e) {
+      res.status(500).json(e);
+      console.log(e)
     }
   }
 

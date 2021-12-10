@@ -23,9 +23,22 @@ class TalentImgCotroller {
         {where: {id} }
       );
 
-      res.status(200).json({msg: `Update ${id} success!`, data: result})
+      res.status(200).json({msg: `Update ${id} success!`, data: resul})
       }catch(err){
         res.status(500).json(err);
+      }
+    }
+
+    static async imageByTalentId(req,res){
+      const id = +req.params.id;
+      try{
+        const result = await talent_image.findAll({
+          where:{talentId:id,primary:true}
+        })
+
+        res.status(200).json(result[0])
+      }catch(e){
+        res.status(400).json(e)
       }
     }
   }
