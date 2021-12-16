@@ -8,15 +8,16 @@ import { User } from "./User";
 import { Order } from "./Order";
 import { Product } from "./Product";
 import { Image } from "./Image";
-import{ EditProd } from "./EditProd";
+import { EditProd } from "./EditProd";
 import { AddProd } from "./AddProd";
 import { AddUser } from "./AddUser";
 import { EditUser } from "./EditUser";
+import { Message } from "./Message";
 
 export const Main = () => {
   const formatter = new Intl.NumberFormat("en-US", {
     style: "currency",
-    currency: "IDR",
+    currency: "USD",
   });
   let option = {
     weekday: "long",
@@ -31,7 +32,10 @@ export const Main = () => {
           {/* <Navbar /> */}
           <Routes>
             <Route exact path="/" element={<Dashboard />} />
-            <Route path="/talent" element={<Product formatter={formatter} option={option} />} />
+            <Route
+              path="/talent"
+              element={<Product formatter={formatter} option={option} />}
+            />
             <Route path="/talent/edit/:id" element={<EditProd />} />
             <Route path="/talent/add" element={<AddProd />} />
             <Route path="/order" element={<Order />} />
@@ -39,6 +43,7 @@ export const Main = () => {
             <Route path="/user/add" element={<AddUser />} />
             <Route path="/user/edit/:id" element={<EditUser />} />
             <Route path="/image" element={<Image />} />
+            <Route path="/messages" element={<Message />} />
           </Routes>
         </div>
       </div>

@@ -1,7 +1,7 @@
-"use strict"
+"use strict";
 
 const { Model } = require("sequelize");
-const {encryptPwd} =  require('../helpers/bcrypt');
+const { encryptPwd } = require("../helpers/bcrypt");
 module.exports = (sequelize, DataTypes) => {
   class user extends Model {
     /**
@@ -15,6 +15,7 @@ module.exports = (sequelize, DataTypes) => {
       user.hasMany(models.talent_comment);
       user.hasMany(models.order);
       user.hasMany(models.cart);
+      user.hasMany(models.message);
     }
   }
   user.init(
@@ -86,7 +87,7 @@ module.exports = (sequelize, DataTypes) => {
       },
       sequelize,
       modelName: "user",
-    }
+    },
   );
   return user;
 };

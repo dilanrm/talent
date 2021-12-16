@@ -49,7 +49,7 @@ module.exports = (sequelize, DataTypes) => {
       },
     },
     total_due: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.NUMBER,
       validate: {
         notEmpty: {
           message: "total_due must not be empty",

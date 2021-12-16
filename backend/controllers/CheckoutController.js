@@ -22,7 +22,7 @@ class CheckoutContoller {
       const charge = await stripe.charges.create(
         {
           amount: product.total_due * 100,
-          currency: "idr",
+          currency: "USD",
           customer: customer.id,
           receipt_email: token.email,
           description: `Purchased the ${product.data[0].talent.fullname}`,

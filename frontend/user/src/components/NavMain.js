@@ -1,15 +1,17 @@
 import React from "react";
+import { useLocation } from "react-router-dom";
 
 export const NavMain = ({ Link }) => {
+  const currRoute = useLocation().pathname;
   return (
     <nav class="navbar navbar-expand-lg">
       <div class="navbar-collapse">
         <div class="nav-inner">
           <ul class="nav main-menu menu navbar-nav">
-            <li class="active">
+            <li className={currRoute === "/" ? "active" : ""}>
               <Link to="/">Home</Link>
             </li>
-            <li>
+            <li className={currRoute === "/shop" ? "active" : ""}>
               <a href="#">
                 Shop<i class="ti-angle-down"></i>
               </a>
@@ -25,7 +27,7 @@ export const NavMain = ({ Link }) => {
                 </li>
               </ul>
             </li>
-            <li>
+            <li className={currRoute === "/contact" ? "active" : ""}>
               <Link to="/contact">Contact Us</Link>
             </li>
           </ul>

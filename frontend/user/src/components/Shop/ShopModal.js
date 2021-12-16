@@ -1,12 +1,74 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+// import CommentsBlock from "simple-react-comments";
+import { CommentSection } from "react-comments-section";
 
-export const ShopModal = ({ talents, formatter, social, addItem, cart }) => {
+import "react-comments-section/dist/index.css";
+
+const client = axios.create({
+  baseURL: "/",
+});
+const access_token = !JSON.parse(localStorage.getItem("user"))
+  ? ""
+  : JSON.parse(localStorage.getItem("user")).access_token;
+
+export const ShopModal = ({
+  talents,
+  formatter,
+  social,
+  addItem,
+  cart,
+  comments,
+  setComments,
+}) => {
   const [modTalent, setModTalent] = useState(talents);
+  let comm = {};
+  const [user, setUser] = useState(null);
+  const signinUrl = "/login";
+  const signupUrl = "/signup";
+  let count = 0;
+
+  const getUser = async () => {
+    const response = await client.post(
+      "/users/",
+      {},
+      {
+        headers: { access_token },
+      },
+    );
+
+    if (response.data) {
+      setUser(response.data);
+    }
+  };
 
   const getBirthddate = (date) => {
     return new Date(date).getDate();
   };
-  // console.log(talents);
+
+  if (talents) {
+    talents.map((tale, key) => {
+      comm[tale.talentId] = [];
+    });
+  }
+  console.log(comm);
+
+  if (comments) {
+    comments.map((i) => count++);
+    comments.map((comme, i) => {
+      comm[comme.talentId].push({
+        authorUrl: "#",
+        avatarUrl: comme.user.avatar,
+        fullName: comme.user.name,
+        text: comme.comment,
+      });
+    });
+  }
+  useEffect(() => {
+    getUser();
+  }, []);
+
+  console.log(comm);
 
   if (!social) return null;
   return (
@@ -61,7 +123,13 @@ export const ShopModal = ({ talents, formatter, social, addItem, cart }) => {
                           </ul>
                         </div>
                         <div class="add-to-cart">
-                          <a href="#" class="btn" onClick={()=>addItem(talent.talent.id,cart[0].id)}>
+                          <a
+                            href="#"
+                            class="btn"
+                            onClick={() =>
+                              addItem(talent.talent.id, cart[0].id)
+                            }
+                          >
                             Add to cart
                           </a>
                         </div>
@@ -72,16 +140,51 @@ export const ShopModal = ({ talents, formatter, social, addItem, cart }) => {
                               return (
                                 <li>
                                   <a
-                                    class={socials.talent.id === talent.talent.id ? socials.platform : ""}
-                                    href={socials.talent.id === talent.talent.id ? socials.account : ""}
+                                    class={
+                                      socials.talent.id === talent.talent.id
+                                        ? socials.platform
+                                        : ""
+                                    }
+                                    href={
+                                      socials.talent.id === talent.talent.id
+                                        ? socials.account
+                                        : ""
+                                    }
                                   >
-                                    <i class={socials.talent.id === talent.talent.id ? "fa fa-" + socials.platform : ""}></i>
+                                    <i
+                                      class={
+                                        socials.talent.id === talent.talent.id
+                                          ? "fa fa-" + socials.platform
+                                          : ""
+                                      }
+                                    ></i>
                                   </a>
                                 </li>
                               );
                             })}
                           </ul>
                         </div>
+                        {/* <br />
+                        <h5>Comments:</h5>
+                        <div className="commentSection">
+                          {!comments ? (
+                            <h2 style={{ fontAlign: "center" }}>No Comment</h2>
+                          ) : !user ? null : (
+                            <CommentSection
+                              currentUser={
+                                user.id && {
+                                  userId: user.id,
+                                  avatarUrl: user.avatar,
+                                  name: user.name,
+                                }
+                              }
+                              commentsArray={comm[talent.talentId]}
+                              setComment={setComments}
+                              signinUrl={signinUrl}
+                              signupUrl={signupUrl}
+                            />
+                          )}
+                        </div> */}
                       </div>
                     </div>
                   </div>

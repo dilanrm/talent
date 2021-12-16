@@ -2,7 +2,9 @@ import React from "react";
 import { Link, useLocation } from "react-router-dom";
 
 export const Header = ({ Logout }) => {
-  const access_token = !JSON.parse(localStorage.getItem("user")) ? ""  : JSON.parse(localStorage.getItem("user")).access_token;
+  const access_token = !JSON.parse(localStorage.getItem("user"))
+    ? ""
+    : JSON.parse(localStorage.getItem("user")).access_token;
   const currRoute = useLocation().pathname;
   return (
     <>
@@ -103,6 +105,17 @@ export const Header = ({ Logout }) => {
                 >
                   <span data-feather="bar-chart-2"></span>
                   Images
+                </Link>
+              </li>
+              <li class="nav-item">
+                <Link
+                  class={
+                    currRoute === "/messages" ? "nav-link active" : "nav-link"
+                  }
+                  to="/messages"
+                >
+                  <span data-feather="layers"></span>
+                  Message
                 </Link>
               </li>
             </ul>

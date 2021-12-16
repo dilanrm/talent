@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
+import ReactPaginate from "react-paginate";
+
+import "../components/Shop/page.css";
 
 import "react-toastify/dist/ReactToastify.css";
 
@@ -12,24 +15,32 @@ import { ShopByPrice } from "../components/Shop/ShopByPrice";
 import { ShopItem } from "../components/Shop/ShopItem";
 import { ShopModal } from "../components/Shop/ShopModal";
 import { ShopSorter } from "../components/Shop/ShopSorter";
+import { Route, Routes } from "react-router-dom";
 
 toast.configure();
 
 const client = axios.create({
   baseURL: "/",
 });
-const token = !JSON.parse(localStorage.getItem("user")) ? "" : JSON.parse(localStorage.getItem("user")).access_token;
+const token = !JSON.parse(localStorage.getItem("user"))
+  ? ""
+  : JSON.parse(localStorage.getItem("user")).access_token;
 
 export const Shop = ({ loading, lineItem, setLineItem }) => {
   const [talents, setTalents] = useState(null);
   const [items, setItems] = useState(talents);
+  const [comments, setComments] = useState(null);
   // const [lineItem, setLineItem] = useState(null);
   const [social, setSocial] = useState(null);
   const [cart, setCart] = useState(null);
 
+  const [offset, setOffset] = useState(0);
+  const [perPage, setPerPage] = useState(3);
+  const [pageCount, setPageCount] = useState(0);
+
   const formatter = new Intl.NumberFormat("en-US", {
     style: "currency",
-    currency: "IDR",
+    currency: "USD",
 
     // These options are needed to round to whole numbers if that's what you want.
     //minimumFractionDigits: 0, // (this suffices for whole numbers, but will print 2500.10 as $2,500.1)
@@ -46,14 +57,23 @@ export const Shop = ({ loading, lineItem, setLineItem }) => {
 
   const getTale = async () => {
     const response = await client.get("/talent-images/");
-    setTalents(response.data);
-    setItems(talents);
-    // console.log(talents);
+    setItems(response.data);
+    const data = response.data;
+    const slice = data.slice(offset, offset + perPage);
+    console.log(slice, offset, offset + perPage);
+    setTalents(slice);
+    setPageCount(Math.ceil(data.length / perPage));
+    console.log(talents);
   };
 
   const getSocial = async () => {
     const response = await client.get("/talent-socials/");
     setSocial(response.data);
+  };
+
+  const getComments = async () => {
+    const response = await client.get("/talent-comments/");
+    setComments(response.data);
   };
 
   const getCart = async () => {
@@ -70,22 +90,36 @@ export const Shop = ({ loading, lineItem, setLineItem }) => {
       { days: 1, status: "booking", talentId, cartId },
       {
         headers: { access_token: token },
-      }
+      },
     );
 
-    if(response){
+    if (response) {
       toast("item add success", { type: "success" });
       getLineItem();
-    }else {
+    } else {
       toast("Something went wrong", { type: "error" });
     }
+  };
+
+  const handlePageClick = (e) => {
+    const selectedPage = e.selected;
+    setOffset((selectedPage * perPage) % items.length);
+    console.log(talents.length);
+    getTale();
+  };
+
+  const onChangePage = (e) => {
+    setPerPage(e.target.value);
+    setOffset(0);
+    setPageCount(Math.ceil(items.length / perPage));
   };
 
   useEffect(() => {
     getTale();
     getSocial();
+    getComments();
     getCart();
-  }, [items]);
+  }, [offset, perPage, pageCount]);
 
   if (!talents) return <Loading />;
 
@@ -109,7 +143,8 @@ export const Shop = ({ loading, lineItem, setLineItem }) => {
                     {/* <!--/ End Single Widget --> */}
                     {/* <!-- Shop By Price --> */}
                     <div class="single-widget range">
-                      <h3 class="title">Shop by Price</h3>
+                      {/* <h3 class="title">Shop by Price</h3> */}
+                      <h3 class="title">Gender</h3>
                       <ShopByPrice />
                     </div>
                     {/* <!--/ End Shop By Price --> */}
@@ -124,16 +159,46 @@ export const Shop = ({ loading, lineItem, setLineItem }) => {
                   </div>
                 </div>
                 <div class="col-lg-9 col-md-7 col-12">
-                  <ShopSorter />
+                  <ShopSorter onChangePage={onChangePage} />
                   <div class="row">
-                    <ShopItem talents={talents} formatter={formatter} addItem={addItem} cart={cart} />
+                    <ShopItem
+                      talents={talents}
+                      formatter={formatter}
+                      addItem={addItem}
+                      cart={cart}
+                      pageCount={pageCount}
+                      onPageChange={handlePageClick}
+                      offset={offset}
+                      perPage={perPage}
+                    />
                   </div>
                 </div>
+                <ReactPaginate
+                  previousLabel={"prev"}
+                  nextLabel={"next"}
+                  breakLabel={"..."}
+                  breakClassName={"break-me"}
+                  pageCount={pageCount}
+                  marginPagesDisplayed={2}
+                  pageRangeDisplayed={5}
+                  onPageChange={handlePageClick}
+                  containerClassName={"pagination"}
+                  subContainerClassName={"pages pagination"}
+                  activeClassName={"active"}
+                />
               </div>
             </div>
           </section>
           {/* <!-- Modal --> */}
-          <ShopModal talents={talents} social={social} formatter={formatter} addItem={addItem} cart={cart} />
+          <ShopModal
+            talents={items}
+            social={social}
+            formatter={formatter}
+            addItem={addItem}
+            cart={cart}
+            comments={comments}
+            setComments={setComments}
+          />
           {/* <!-- Modal end --> */}
         </div>
       )}

@@ -28,5 +28,7 @@ const lineItemRoute = require("./lineItem");
 router.use("/line-items", lineItemRoute);
 const uploadRoute = require("./upload");
 router.use("/upload", uploadRoute);
+const messageRoute = require("./message");
+router.use("/message", messageRoute);
 
 module.exports = router;

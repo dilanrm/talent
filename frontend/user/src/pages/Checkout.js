@@ -8,14 +8,15 @@ import "react-toastify/dist/ReactToastify.css";
 import { Breadcrumb } from "../components/Breadcrumb";
 import { Loading } from "../components/Loading";
 
-
-
 toast.configure();
 
 const client = axios.create({
   baseURL: "/",
 });
-const access_token = !JSON.parse(localStorage.getItem("user")) ? ""  : JSON.parse(localStorage.getItem("user")).access_token;
+let days;
+const access_token = !JSON.parse(localStorage.getItem("user"))
+  ? ""
+  : JSON.parse(localStorage.getItem("user")).access_token;
 
 export const Checkout = ({ loading }) => {
   let history = useNavigate();
@@ -28,12 +29,12 @@ export const Checkout = ({ loading }) => {
     total_due: total,
   });
 
-  let days = 0;
+  days = days || 0;
   let total_temp = 0;
 
   const formatter = new Intl.NumberFormat("en-US", {
     style: "currency",
-    currency: "IDR",
+    currency: "USD",
   });
 
   const handleCard = (val) => {
@@ -51,10 +52,12 @@ export const Checkout = ({ loading }) => {
     const address = receipt_email;
 
     const { total_due } = product;
-    const startdate = new Date();
+    const tgl = new Date();
+    let startdate = new Date();
     let enddate = new Date();
+    startdate.setDate(tgl.getDate() + 2);
     enddate.setDate(startdate.getDate() + days);
-    const tax = 2;
+    const tax = 12;
     const discount = disc !== 1 ? 5 : 0;
 
     const response = await client.post(
@@ -65,7 +68,7 @@ export const Checkout = ({ loading }) => {
         tax,
         discount,
         total_due,
-        total_days: days,
+        days,
         description,
         payt_trx_num,
         city,
@@ -73,7 +76,7 @@ export const Checkout = ({ loading }) => {
       },
       {
         headers: { access_token },
-      }
+      },
     );
     if (response.data) {
       editLine(response.data.id);
@@ -105,7 +108,7 @@ export const Checkout = ({ loading }) => {
       { token, product },
       {
         headers: { access_token },
-      }
+      },
     );
     const { status, data } = response.data;
     console.log("Response:", response);
@@ -152,7 +155,9 @@ export const Checkout = ({ loading }) => {
   useEffect(() => {
     setProduct({
       data: lineItem,
-      total_due: total * (1 - disc) + total * 0.02,
+      total_due:
+        Math.round((total * (1 - disc) + total * 0.12 + Number.EPSILON) * 100) /
+        100,
     });
     console.log(product.total_due);
   }, [total]);
@@ -184,21 +189,21 @@ export const Checkout = ({ loading }) => {
                           <li>
                             Disc. (> 2 days)
                             <span>
-                              {disc !== 1
+                              {disc !== 0.05
                                 ? "5% (" + formatter.format(total * disc) + ")"
-                                : "0%"}
+                                : "0% (" + formatter.format(total * 0) + ")"}
                             </span>
                           </li>
                           <li>
                             Tax
-                            <span>2% ({formatter.format(total * 0.02)})</span>
+                            <span>12% ({formatter.format(total * 0.12)})</span>
                           </li>
                           {/* <li>You Save<span>$20.00</span></li> */}
                           <li class="last">
                             You Pay
                             <span>
                               {formatter.format(
-                                total * (1 - disc) + total * 0.02
+                                total * (1 - disc) + total * 0.12,
                               )}
                             </span>
                           </li>

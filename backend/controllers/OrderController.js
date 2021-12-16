@@ -37,7 +37,7 @@ class OrderController {
       tax,
       discount,
       total_due,
-      total_days,
+      days,
       description,
       payt_trx_num,
       city,
@@ -51,7 +51,7 @@ class OrderController {
         tax,
         discount,
         total_due,
-        total_days,
+        total_days: days,
         description,
         payt_trx_num,
         city,
@@ -86,7 +86,7 @@ class OrderController {
         {
           status,
         },
-        { where: { id } }
+        { where: { id } },
       );
       res.status(200).json(result);
     } catch (err) {
@@ -128,7 +128,7 @@ class OrderController {
           status,
           userId,
         },
-        { where: { id } }
+        { where: { id } },
       );
       res.status(200).json(result);
     } catch (err) {

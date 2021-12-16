@@ -18,7 +18,7 @@ export const ShoppingMenu = ({ lineItem, setLineItem }) => {
   // const [lineItem, setLineItem] = useState(null);
   const formatter = new Intl.NumberFormat("en-US", {
     style: "currency",
-    currency: "IDR",
+    currency: "USD",
   });
   const getCart = async () => {
     const response = await client.get("/carts/", {

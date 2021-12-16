@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Redirect } from "react";
 import {
   BrowserRouter as Router,
   Routes,
@@ -24,18 +24,19 @@ const client = axios.create({
   baseURL: "/",
 });
 
-  if (!JSON.parse(localStorage.getItem("user"))) {
-    localStorage.setItem("user", JSON.stringify({ access_token: "" }));
-  }
+if (!JSON.parse(localStorage.getItem("user"))) {
+  localStorage.setItem("user", JSON.stringify({ access_token: "" }));
+}
 
 function App() {
   // const history = useNavigate();
-  const token = !JSON.parse(localStorage.getItem("user")) ? ""  : JSON.parse(localStorage.getItem("user")).access_token;
+  const token = !JSON.parse(localStorage.getItem("user"))
+    ? ""
+    : JSON.parse(localStorage.getItem("user")).access_token;
   const [user, setUser] = useState({ access_token: "" });
   const [lineItem, setLineItem] = useState(null);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(true);
-
 
   const Login = async (details) => {
     // console.log(details);
@@ -49,7 +50,7 @@ function App() {
       setUser({ access_token: result.data.access_token });
       localStorage.setItem(
         "user",
-        JSON.stringify({ access_token: result.data.access_token })
+        JSON.stringify({ access_token: result.data.access_token }),
       );
       console.log(JSON.parse(localStorage.getItem("user")));
       window.location.reload();
@@ -57,7 +58,6 @@ function App() {
       console.log(result.data.message);
       setError(result.data.message);
     }
-
   };
 
   const Logout = () => {
@@ -73,7 +73,7 @@ function App() {
     console.log(details);
 
     const response = await client.post("/users/register", details);
-    if(response) window.alert("Registration success! You can login now.") 
+    if (response) window.alert("Registration success! You can login now.");
   };
 
   useEffect(() => {
@@ -92,49 +92,66 @@ function App() {
               lineItem={lineItem}
               setLineItem={setLineItem}
             />
+            {token !== "" && (
+              <Routes>
+                <Route exact path="/" element={<Home />} loading={loading} />
+                <Route
+                  path="/login"
+                  element={
+                    <LoginForm Login={Login} Error={error} loading={loading} />
+                  }
+                />
+                <Route
+                  path="/signup"
+                  element={
+                    <Regist loading={loading} error={error} Signup={Signup} />
+                  }
+                />
+                {/* <Redirect from="/shop/page/1" to="/shop" /> */}
+                <Route
+                  path="/shop/page/:pageNumber"
+                  element={
+                    <Shop
+                      loading={loading}
+                      lineItem={lineItem}
+                      setLineItem={setLineItem}
+                    />
+                  }
+                />
+                <Route
+                  path="/shop"
+                  element={
+                    <Shop
+                      loading={loading}
+                      lineItem={lineItem}
+                      setLineItem={setLineItem}
+                    />
+                  }
+                />
 
-            <Routes>
-              <Route exact path="/" element={<Home />} loading={loading} />
-              <Route
-                path="/login"
-                element={
-                  <LoginForm Login={Login} Error={error} loading={loading} />
-                }
-              />
-              <Route
-                path="/signup"
-                element={
-                  <Regist loading={loading} error={error} Signup={Signup} />
-                }
-              />
-              <Route
-                path="/shop"
-                element={
-                  <Shop
-                    loading={loading}
-                    lineItem={lineItem}
-                    setLineItem={setLineItem}
-                  />
-                }
-              />
-              <Route path="profile" element={<Profile loading={loading} />} />
-              <Route
-                path="/cart"
-                element={
-                  <Cart
-                    loading={loading}
-                    lineItem={lineItem}
-                    setLineItem={setLineItem}
-                  />
-                }
-              />
-              <Route
-                path="/checkout"
-                element={<Checkout loading={loading} />}
-              />
-              <Route path="/contact" element={<Contact />} loading={loading} />
-              <Route path="/order" element={<Order />} loading={loading} />
-            </Routes>
+                <Route path="profile" element={<Profile loading={loading} />} />
+                <Route
+                  path="/cart"
+                  element={
+                    <Cart
+                      loading={loading}
+                      lineItem={lineItem}
+                      setLineItem={setLineItem}
+                    />
+                  }
+                />
+                <Route
+                  path="/checkout"
+                  element={<Checkout loading={loading} />}
+                />
+                <Route
+                  path="/contact"
+                  element={<Contact />}
+                  loading={loading}
+                />
+                <Route path="/order" element={<Order />} loading={loading} />
+              </Routes>
+            )}
 
             <Footer />
           </Router>

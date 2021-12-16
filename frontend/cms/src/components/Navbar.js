@@ -74,6 +74,15 @@ export const Navbar = () => {
               Items Chart
             </Link>
           </li>
+          <li class="nav-item">
+            <Link
+              class={currRoute === "/messages" ? "nav-link active" : "nav-link"}
+              to="/messages"
+            >
+              <span data-feather="layers"></span>
+              Message
+            </Link>
+          </li>
         </ul>
       </div>
     </nav>

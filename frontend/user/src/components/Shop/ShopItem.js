@@ -1,12 +1,25 @@
-import React, {useState} from "react";
+import React, { useState, useEffect } from "react";
 
-export const ShopItem = ({ talents, formatter, addItem, cart }) => {
-  const [talentList,setTalentList] = useState(talents);
+export const ShopItem = ({
+  talents,
+  formatter,
+  addItem,
+  cart,
+  offset,
+  perPage,
+}) => {
+  const [talentList, setTalentList] = useState(
+    talents
+  );
 
-  if(!talentList) setTalentList(talents)
+  useEffect(() => {}, [offset]);
+
+  console.log(talentList);
+
+  if (!talentList) setTalentList(talents);
   return (
-    <> 
-      {talentList.map((talent, key) => {
+    <>
+      {talents.map((talent, key) => {
         return (
           <div class="col-lg-4 col-md-6 col-12">
             <div class="single-product">
@@ -33,7 +46,11 @@ export const ShopItem = ({ talents, formatter, addItem, cart }) => {
                     </a>
                   </div>
                   <div class="product-action-2">
-                    <a title="Add to cart" href="#" onClick={()=>addItem(talent.talent.id,cart[0].id)}>
+                    <a
+                      title="Add to cart"
+                      href="#"
+                      onClick={() => addItem(talent.talent.id, cart[0].id)}
+                    >
                       Add to cart
                     </a>
                   </div>

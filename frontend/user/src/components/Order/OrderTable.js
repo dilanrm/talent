@@ -8,6 +8,10 @@ export const OrderTable = ({ orders }) => {
     month: "long",
     day: "numeric",
   };
+  const formatter = new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: "USD",
+  });
   if (!orders) return <Loading />;
   return (
     <div class="row">
@@ -52,7 +56,7 @@ export const OrderTable = ({ orders }) => {
                       </strong>
                     </td>
                     <td>{order.total_days}</td>
-                    <td>{order.total_due}</td>
+                    <td>{formatter.format(order.total_due)}</td>
                     <td>
                       <span
                         style={

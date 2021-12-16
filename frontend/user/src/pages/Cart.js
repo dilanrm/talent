@@ -24,7 +24,7 @@ export const Cart = ({ loading, lineItem, setLineItem }) => {
 
   const formatter = new Intl.NumberFormat("en-US", {
     style: "currency",
-    currency: "IDR",
+    currency: "USD",
   });
 
   const getCart = async () => {
